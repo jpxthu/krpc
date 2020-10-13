@@ -73,7 +73,7 @@ def servicedefs(ksp, service, assemblies):
         'Assembly-CSharp-firstpass.dll',
         'UnityEngine.dll'
     ]
-    ksp_data = 'KSP_Data/Managed'
+    ksp_data = 'KSP_x64_Data/Managed'
     if not os.path.exists(os.path.join(ksp, ksp_data)):
         ksp_data = 'KSP_x64_Data/Managed'
     for dll in ksp_dlls:
