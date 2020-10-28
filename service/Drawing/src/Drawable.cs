@@ -17,7 +17,8 @@ namespace KRPC.Drawing
         {
             GameObject = new GameObject ("KRPC.Drawing." + typeof(T).Name);
             Renderer = (Renderer)GameObject.AddComponent (rendererType);
-            Material = "Particles/Additive";
+            Material = "Legacy Shaders/Particles/Additive";
+            //Material = "Particles/Additive";
             Addon.AddObject (this);
         }
 
