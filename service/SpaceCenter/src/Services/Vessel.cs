@@ -533,6 +533,13 @@ namespace KRPC.SpaceCenter.Services
             get { return AvailableOtherTorqueVectors.ToTuple (); }
         }
 
+        /// <summary>
+        /// The maximum torque that parts (excluding reaction wheels, gimballed engines,
+        /// RCS and control surfaces) can generate.
+        /// Returns the torques in <math>N.m</math> around each of the coordinate axes of the
+        /// vessels reference frame (<see cref="ReferenceFrame"/>).
+        /// These axes are equivalent to the pitch, roll and yaw axes of the vessel.
+        /// </summary>
         [KRPCProperty (GameScene = GameScene.Flight)]
         public TupleT3 AvailablePosTorque {
             get { return AvailableTorqueVectors.ToTuple (); }
