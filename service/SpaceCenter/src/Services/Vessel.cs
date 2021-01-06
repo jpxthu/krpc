@@ -533,6 +533,17 @@ namespace KRPC.SpaceCenter.Services
             get { return AvailableOtherTorqueVectors.ToTuple (); }
         }
 
+        /// <summary>
+        /// The average of positive and negative torque that all parts can generate.
+        /// Returns the torques in <math>N.m</math> around each of the coordinate axes of the
+        /// vessels reference frame (<see cref="ReferenceFrame"/>).
+        /// These axes are equivalent to the pitch, roll and yaw axes of the vessel.
+        /// </summary>
+        [KRPCProperty (GameScene = GameScene.Flight)]
+        public Tuple3 AvailableAverageTorque {
+            get { return AvailableAverageTorqueVector.ToTuple (); }
+        }
+
         internal TupleV3 AvailableTorqueVectors {
             get {
                 return ITorqueProviderExtensions.Sum (new [] {
@@ -585,6 +596,30 @@ namespace KRPC.SpaceCenter.Services
                     }
                 }
                 return ITorqueProviderExtensions.Sum (torques);
+            }
+        }
+
+        internal Vector3d AvailableAverageTorqueVector {
+            get {
+                var torques = Vector3d.zero;
+                // Include contributions from other ITorqueProviders
+                var parts = InternalVessel.parts;
+                foreach (var part in parts) {
+                    foreach (var module in part.Modules) {
+                        var torqueProvider = module as ITorqueProvider;
+                        if (torqueProvider != null) {
+                            // It is possible for the torque returned to be negative. It's also possible
+                            // for the positive and negative actuation to differ. Below averages the value
+                            // for positive and negative actuation in an attempt to compensate for some issues
+                            // of differing signs and asymmetric torque.
+                            var torque = torqueProvider.GetPotentialTorque ();
+                            torques.x += (Math.Abs(torque.Item1.x) + Math.Abs(torque.Item2.x)) / 2;
+                            torques.y += (Math.Abs(torque.Item1.y) + Math.Abs(torque.Item2.y)) / 2;
+                            torques.z += (Math.Abs(torque.Item1.z) + Math.Abs(torque.Item2.z)) / 2;
+                        }
+                    }
+                }
+                return torques;
             }
         }
 
